@@ -9,7 +9,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/SEU_USUARIO/gitops.git
+    repoURL: https://github.com/italo-jsm/gitops.git
     targetRevision: HEAD
     path: applications/nginx
 
