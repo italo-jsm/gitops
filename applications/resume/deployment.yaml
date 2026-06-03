@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resume-app
+  labels:
+    app: resume-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resume-app
+  template:
+    metadata:
+      labels:
+        app: resume-app
+    spec:
+      containers:
+        - name: resume-app
+          image: "ghcr.io/italo-jsm/personal-resume:sha-6eb87d0"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
