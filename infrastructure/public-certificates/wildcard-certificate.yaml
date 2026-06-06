@@ -1,16 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
-
 metadata:
   name: wildcard-italomariano-dev-br
-
 spec:
   secretName: wildcard-italomariano-dev-br
-
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-
   dnsNames:
     - italomariano.dev.br
     - "*.italomariano.dev.br"
