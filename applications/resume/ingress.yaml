@@ -10,7 +10,7 @@ spec:
     - hosts:
         - italomariano.dev.br
         - www.italomariano.dev.br
-      secretName: italomariano-root-wildcard-tls
+      secretName: wildcard-italomariano-dev-br
   rules:
     - host: italomariano.dev.br
       http:
