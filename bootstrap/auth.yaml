@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: auth
+  namespace: argocd
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: keycloak
+    targetRevision: 25.3.2
+    helm:
+      releaseName: auth
+      values: |
+        auth:
+          adminUser: admin
+
+        production: true
+        proxyHeaders: xforwarded
+        hostnameStrict: true
+        httpEnabled: true
+
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          hostname: auth.italomariano.dev.br
+          path: /
+          pathType: Prefix
+          annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+          extraTls:
+            - hosts:
+                - auth.italomariano.dev.br
+              secretName: wildcard-italomariano-dev-br
+
+        postgresql:
+          enabled: true
+          architecture: standalone
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
