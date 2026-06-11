@@ -9,47 +9,59 @@ spec:
   project: default
 
   source:
-    repoURL: registry-1.docker.io/bitnamicharts
+    repoURL: https://repo.helmforge.dev
     chart: keycloak
-    targetRevision: 25.2.0
+    targetRevision: 3.0.2
     helm:
       releaseName: auth
       values: |
-        global:
-          security:
-            allowInsecureImages: true
+        mode: production
 
         image:
-          registry: docker.io
-          repository: bitnamilegacy/keycloak
+          repository: quay.io/keycloak/keycloak
+          tag: "26.6.2"
 
-        auth:
-          adminUser: admin
+        hostname:
+          hostname: https://auth.italomariano.dev.br
+          strict: true
 
-        production: true
-        proxyHeaders: xforwarded
-        hostnameStrict: true
-        httpEnabled: true
+        admin:
+          username: admin
+
+        proxy:
+          headers: xforwarded
 
         ingress:
-          enabled: true
-          ingressClassName: traefik
-          hostname: auth.italomariano.dev.br
-          path: /
-          pathType: Prefix
-          annotations:
-            traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-          extraTls:
-            - hosts:
-                - auth.italomariano.dev.br
-              secretName: wildcard-italomariano-dev-br
+          public:
+            enabled: true
+            ingressClassName: traefik
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+            hosts:
+              - host: auth.italomariano.dev.br
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - secretName: wildcard-italomariano-dev-br
+                hosts:
+                  - auth.italomariano.dev.br
+          admin:
+            enabled: false
 
         postgresql:
           enabled: true
-          architecture: standalone
-          image:
-            registry: docker.io
-            repository: bitnamilegacy/postgresql
+          auth:
+            database: keycloak
+            username: keycloak
+
+        cache:
+          enabled: true
+          stack: jdbc-ping
+
+        pdb:
+          enabled: true
+          minAvailable: 1
 
   destination:
     server: https://kubernetes.default.svc
