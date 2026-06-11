@@ -9,60 +9,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://repo.helmforge.dev
-    chart: keycloak
-    targetRevision: 3.0.2
-    helm:
-      releaseName: auth
-      values: |
-        mode: production
-
-        image:
-          repository: quay.io/keycloak/keycloak
-          tag: "26.6.2"
-
-        hostname:
-          hostname: https://auth.italomariano.dev.br
-          strict: true
-
-        admin:
-          username: admin
-          password: "3GELuLESUekeoim/7mEVKa1cHZgHOOWbY2bz/1wG/26fjBQe"
-
-        proxy:
-          headers: xforwarded
-
-        ingress:
-          public:
-            enabled: true
-            ingressClassName: traefik
-            annotations:
-              traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-            hosts:
-              - host: auth.italomariano.dev.br
-                paths:
-                  - path: /
-                    pathType: Prefix
-            tls:
-              - secretName: wildcard-italomariano-dev-br
-                hosts:
-                  - auth.italomariano.dev.br
-          admin:
-            enabled: false
-
-        postgresql:
-          enabled: true
-          auth:
-            database: keycloak
-            username: keycloak
-            password: "32105185d488c06aeb04a80ca21775738fc7bcadca19c8d2"
-
-        cache:
-          enabled: true
-          stack: jdbc-ping
-
-        pdb:
-          enabled: false
+    repoURL: https://github.com/italo-jsm/gitops.git
+    targetRevision: HEAD
+    path: applications/auth
 
   destination:
     server: https://kubernetes.default.svc
