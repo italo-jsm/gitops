@@ -14,6 +14,8 @@ spec:
       labels:
         app.kubernetes.io/name: finance
     spec:
+      imagePullSecrets:
+        - name: ghcr-credentials
       containers:
         - name: finance
           image: ghcr.io/italo-jsm/finance:be0ac392cfa1604638729d6d7f05683d53e25044
