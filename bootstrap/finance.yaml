@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: finance
+  namespace: argocd
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/italo-jsm/gitops.git
+    targetRevision: HEAD
+    path: applications/finance
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

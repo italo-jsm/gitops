@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finance-config
+  labels:
+    app.kubernetes.io/name: finance
+data:
+  QUARKUS_SWAGGER_UI_OAUTH2_REDIRECT_URL: https://finance.italomariano.dev.br/q/swagger-ui/oauth2-redirect.html
+
+  QUARKUS_DATASOURCE_USERNAME: finance_user
+  QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://192.168.0.13:5432/finance
+
+  QUARKUS_OIDC_AUTH_SERVER_URL: https://auth.italomariano.dev.br/realms/finance
+
+  QUARKUS_HTTP_CORS_ORIGINS: https://finance.italomariano.dev.br
