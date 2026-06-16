@@ -5,8 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/name: finance
 data:
-  QUARKUS_SWAGGER_UI_OAUTH2_REDIRECT_URL: https://finance.italomariano.dev.br/q/swagger-ui/oauth2-redirect.html
-
   QUARKUS_DATASOURCE_USERNAME: finance_user
   QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://192.168.0.13:5432/finance
 
