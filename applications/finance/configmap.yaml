@@ -8,6 +8,6 @@ data:
   QUARKUS_DATASOURCE_USERNAME: finance_user
   QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://192.168.0.13:5432/finance
 
-  QUARKUS_OIDC_AUTH_SERVER_URL: http://localhost:3000,https://finance.italomariano.dev.brhttps://auth.italomariano.dev.br/realms/finance
+  QUARKUS_OIDC_AUTH_SERVER_URL: https://auth.italomariano.dev.br/realms/finance
 
   QUARKUS_HTTP_CORS_ORIGINS: http://localhost:3000,https://finance.italomariano.dev.br
