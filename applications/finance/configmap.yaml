@@ -10,4 +10,4 @@ data:
 
   QUARKUS_OIDC_AUTH_SERVER_URL: https://auth.italomariano.dev.br/realms/finance
 
-  QUARKUS_HTTP_CORS_ORIGINS: http://localhost:3000,https://finance.italomariano.dev.br
+  QUARKUS_HTTP_CORS_ORIGINS: http://localhost:3000,https://finance.italomariano.dev.br,https://app.italomariano.dev.br
