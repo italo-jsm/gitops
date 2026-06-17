@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app.kubernetes.io/name: app
+data:
+  NEXT_PUBLIC_KEYCLOAK_URL: https://auth.italomariano.dev.br
+  NEXT_PUBLIC_KEYCLOAK_REALM: finance
+  NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: finance-front
