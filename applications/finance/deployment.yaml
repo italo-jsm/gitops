@@ -18,7 +18,7 @@ spec:
         - name: ghcr-credentials
       containers:
         - name: finance
-          image: ghcr.io/italo-jsm/finance:sha-7c70de1
+          image: ghcr.io/italo-jsm/finance:sha-0d1267d
           imagePullPolicy: Always
           ports:
             - name: http
