@@ -9,9 +9,26 @@ spec:
       app.kubernetes.io/name: auth
   template:
     metadata:
+      annotations:
+        checksum/login-theme: "0224e288b31b26f9de42459a9d88fce8489c77f8601b83ad2d435786e038d5f9"
       labels:
         app.kubernetes.io/name: auth
     spec:
+      volumes:
+        - name: login-theme-im
+          configMap:
+            name: auth-login-theme-im
+            items:
+              - key: theme.properties
+                path: theme.properties
+              - key: im.css
+                path: resources/css/im.css
+              - key: im-logo.svg
+                path: resources/img/im-logo.svg
+              - key: messages_en.properties
+                path: messages/messages_en.properties
+              - key: messages_pt_BR.properties
+                path: messages/messages_pt_BR.properties
       initContainers:
         - name: wait-for-postgresql
           image: docker.io/library/busybox:1.37
@@ -65,6 +82,10 @@ spec:
               value: "true"
             - name: KC_HEALTH_ENABLED
               value: "true"
+          volumeMounts:
+            - name: login-theme-im
+              mountPath: /opt/keycloak/themes/im/login
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /health/ready

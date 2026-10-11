@@ -1,0 +1,157 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-login-theme-im
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+data:
+  theme.properties: |
+    parent=keycloak
+    import=common/keycloak
+    styles=css/login.css css/im.css
+  im.css: |
+    :root { color-scheme: light; }
+    
+    html.login-pf,
+    .login-pf body {
+      min-height: 100%;
+      background: #fff;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .login-pf body {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 40px 24px;
+    }
+    
+    .login-pf-page { width: 100%; max-width: 352px; padding: 0; }
+    #kc-header { margin: 0 0 40px; color: #111; }
+    
+    #kc-header-wrapper {
+      width: 128px;
+      height: 84px;
+      margin: 0 auto;
+      padding: 0;
+      overflow: hidden;
+      background: url('../img/im-logo.svg') center / contain no-repeat;
+      /* Keep the brand text available to assistive technology. */
+      text-indent: -9999px;
+      white-space: nowrap;
+    }
+    
+    .login-pf-page .card-pf {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+    
+    /* Other authentication steps keep their instructions and headings. */
+    body[data-page-id="login-login"] #kc-page-title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    
+    .login-pf-page .login-pf-header { margin-bottom: 24px; }
+    body[data-page-id="login-login"] .login-pf-header { margin-bottom: 0; }
+    #kc-content { margin: 0; }
+    .login-pf-page .form-group { margin-bottom: 24px; }
+    
+    .login-pf-page label {
+      margin-bottom: 8px;
+      color: #333;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .login-pf-page .pf-c-form-control {
+      height: 48px;
+      padding: 12px 14px;
+      border: 1px solid #d4d4d4;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      font-size: 16px;
+      box-shadow: none;
+    }
+    
+    .login-pf-page .pf-c-form-control:focus {
+      border-color: #111;
+      outline: 2px solid #111;
+      outline-offset: 2px;
+      box-shadow: none;
+    }
+    
+    .login-pf-page .pf-c-input-group .pf-c-form-control { border-radius: 6px 0 0 6px; }
+    .login-pf-page .pf-c-input-group .pf-c-button {
+      min-width: 48px;
+      border: 1px solid #d4d4d4;
+      border-left: 0;
+      border-radius: 0 6px 6px 0;
+      background: #fff;
+      color: #111;
+      box-shadow: none;
+    }
+    
+    .login-pf-page .pf-c-button.pf-m-primary {
+      min-height: 48px;
+      border: 1px solid #111;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: none;
+    }
+    
+    .login-pf-page .pf-c-button.pf-m-primary:hover { border-color: #333; background: #333; }
+    .login-pf-page a {
+      color: #333;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    
+    .login-pf-page a:focus-visible,
+    .login-pf-page button:focus-visible,
+    .login-pf-page input[type="submit"]:focus-visible {
+      outline: 2px solid #111;
+      outline-offset: 3px;
+    }
+    
+    #kc-info-wrapper { padding: 16px 0 0; background: transparent; }
+    .login-pf-page .pf-c-alert { margin-bottom: 24px; border-radius: 6px; }
+    
+    @media (max-width: 767px) {
+      .login-pf-page .login-pf-header { padding: 0; }
+    }
+    
+    .login-pf-page .pf-c-button::after { border: 0; }
+    .login-pf-settings:not(:has(input, a)) { display: none; }
+  im-logo.svg: |
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 104" role="img" aria-labelledby="title">
+      <title id="title">IM — Italo Mariano</title>
+      <g fill="#111111">
+        <path d="M16 16h36v8H40v56h12v8H16v-8h12V24H16z"/>
+        <path d="M68 88V16h12l26 42 26-42h12v72h-12V38l-26 40-26-40v50z"/>
+      </g>
+    </svg>
+  messages_en.properties: |
+    loginTitle=IM
+    loginTitleHtml=IM
+  messages_pt_BR.properties: |
+    loginTitle=IM
+    loginTitleHtml=IM
