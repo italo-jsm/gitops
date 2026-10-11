@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/login-theme: "0224e288b31b26f9de42459a9d88fce8489c77f8601b83ad2d435786e038d5f9"
+        checksum/login-theme: "832410c974349e868dcefd45016a5290ab0b2b875697765bc547d727b8c57e85"
       labels:
         app.kubernetes.io/name: auth
     spec:
@@ -23,6 +23,8 @@ spec:
                 path: theme.properties
               - key: im.css
                 path: resources/css/im.css
+              - key: favicon.ico
+                path: resources/img/favicon.ico
               - key: im-logo.svg
                 path: resources/img/im-logo.svg
               - key: messages_en.properties

@@ -20,10 +20,18 @@ no banco do Keycloak. A seleção do tema no cliente/realm é necessária.
 
 ## Atualizações
 
-Edite os arquivos dentro de `data` no ConfigMap. Atualize também a anotação
+Edite os arquivos dentro de `data` no ConfigMap. O favicon IM está em
+`binaryData.favicon.ico`, codificado em base64, e é montado em
+`resources/img/favicon.ico`, substituindo o ícone padrão do Keycloak.
+Atualize também a anotação
 `checksum/login-theme` no template do deployment para disparar um rollout
-e invalidar o cache do tema. O checksum inicial é o SHA-256 de `data`
-serializado como JSON pelo Python (`json.dumps(data, sort_keys=True)`).
+e invalidar o cache do tema. O checksum é o SHA-256 do objeto
+`{"data": ..., "binaryData": ...}` serializado como JSON pelo Python
+(`json.dumps(payload, sort_keys=True)`). Inclua as duas seções ao calculá-lo.
+
+Não é necessário gerar uma imagem Docker: commit e push neste repositório
+disparam a sincronização automática configurada em `bootstrap/auth.yaml`.
+Se a aba ainda mostrar o ícone antigo, confira em uma janela anônima.
 
 A origem da logo e do tema está no repositório `finance-front`, em
 `public/im-logo.svg` e `keycloak/themes/im/login`.
