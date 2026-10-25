@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nous-enqueuer
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/italo-jsm/gitops.git
+    targetRevision: main
+    path: applications/nous-enqueuer
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
