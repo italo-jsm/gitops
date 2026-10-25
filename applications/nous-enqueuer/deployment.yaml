@@ -31,8 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: nous-enqueuer
-          # Set to the immutable tag or digest produced by the enqueuer CI before rollout.
-          image: ghcr.io/italo-jsm/nous-enqueuer:sha-SET-BEFORE-ROLLOUT
+          image: ghcr.io/italo-jsm/nous-enqueuer:sha-07615245204200f610e8fdf2cd0d435fc08af884@sha256:1b60095302b28851b9924cad0051bf73d8074da3c68f4352065ae1599c960fee
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
