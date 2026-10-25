@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: nous-enqueuer
-          image: ghcr.io/italo-jsm/nous-enqueuer:sha-07615245204200f610e8fdf2cd0d435fc08af884@sha256:1b60095302b28851b9924cad0051bf73d8074da3c68f4352065ae1599c960fee
+          image: ghcr.io/italo-jsm/nous-enqueuer:sha-3c23725d0a8cffeae58b9efcd49ea7e4615130e8@sha256:aa6b4fd6ddbba077f670326e54e242d6a783b3dbb89453d35938060f41d976e0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
