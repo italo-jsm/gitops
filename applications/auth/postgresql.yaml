@@ -26,6 +26,10 @@ spec:
       labels:
         app.kubernetes.io/name: auth-db
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
         - name: postgresql
           image: docker.io/library/postgres:18.3-trixie
