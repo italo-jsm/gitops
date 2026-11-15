@@ -49,6 +49,17 @@ spec:
                   key: db-password
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
+          startupProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - keycloak
+                - -d
+                - keycloak
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 60
           livenessProbe:
             exec:
               command:
@@ -57,6 +68,7 @@ spec:
                 - pg_isready -U keycloak -d keycloak
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
             exec:
               command:
@@ -65,6 +77,7 @@ spec:
                 - pg_isready -U keycloak -d keycloak
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
