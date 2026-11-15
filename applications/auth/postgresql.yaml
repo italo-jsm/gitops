@@ -34,6 +34,11 @@ spec:
         - name: postgresql
           image: docker.io/library/postgres:18.3-trixie
           imagePullPolicy: IfNotPresent
+          # Work around containerd AppArmor stacked-profile signal denials.
+          # Remove after the node runtime/kernel has the upstream fix.
+          securityContext:
+            appArmorProfile:
+              type: Unconfined
           ports:
             - name: postgres
               containerPort: 5432
