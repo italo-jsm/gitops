@@ -17,13 +17,15 @@ spec:
         - name: ghcr-credentials
       containers:
         - name: ai
-          image: ghcr.io/italo-jsm/ai@sha256:d37b4b373ddaa9ba083623025145bb397fee9dfcfe09d9f9425e61f106e07ea7
+          image: ghcr.io/italo-jsm/ai@sha256:9c74e0a8a6fb74af767eac70b64bb9977b7342e8d4c6224f09d8956e949e1f46
           ports:
             - name: http
               containerPort: 8080
           envFrom:
             - configMapRef:
                 name: ai-config
+            - secretRef:
+                name: ai-finance-oauth
           env:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
