@@ -30,6 +30,8 @@ spec:
                 name: ai-smtp
                 optional: true
           env:
+            - name: TELEGRAM_CONSUMER_ENABLED
+              value: "false"
             - name: SPRING_RABBITMQ_ADDRESSES
               valueFrom:
                 secretKeyRef:
