@@ -26,7 +26,20 @@ spec:
                 name: ai-config
             - secretRef:
                 name: ai-finance-oauth
+            - secretRef:
+                name: ai-smtp
+                optional: true
           env:
+            - name: SPRING_RABBITMQ_ADDRESSES
+              valueFrom:
+                secretKeyRef:
+                  name: nous-enqueuer-rabbitmq
+                  key: url
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ai-telegram
+                  key: bot-token
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
