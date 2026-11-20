@@ -5,7 +5,7 @@
 - O projeto [ai](../ai) usa Java 21 e Spring Boot, atende na porta 8080 e roda como UID 10001. O workflow de `main` roda `./gradlew clean build` e publica `ghcr.io/italo-jsm/ai:sha-<7 caracteres>` para amd64 e arm64.
 - O GitOps usa k3s, Traefik e Argo CD. O [Ingress do Finance](applications/finance/ingress.yaml) usa o certificado `wildcard-italomariano-dev-br` no namespace `default`, gerenciado pelo cert-manager. A consulta ao cluster mostrou Finance, Keycloak e `nous-enqueuer` prontos em `default`.
 - O AI usa PostgreSQL com Liquibase e pgvector. O padrão local aponta para o loopback e precisa ser substituído no cluster. Todos os perfis de chat usam Ollama para os embeddings `nomic-embed-text` de 768 dimensões.
-- O build atual não inclui Actuator. O endpoint de chat identifica a conta pelo `username` enviado no corpo, e o cadastro aceita um ID de Telegram opcional. Liberar essas rotas na internet exige controle de identidade e de vínculo de conta.
+- A versão implantada inclui Actuator e exige HTTP Basic no chat em produção. O chat deriva a conta do login autenticado. Cadastro, vínculo de Telegram e endpoints de saúde ficam disponíveis apenas internamente.
 
 ## 1. Preparar a aplicação e a imagem
 
@@ -38,6 +38,13 @@
 ## Aceite e rollback
 
 - Aceite quando Argo CD estiver sincronizado e saudável, HTTPS responder nas rotas aprovadas, chat e memória passarem nos testes, e cada integração habilitada funcionar de ponta a ponta. Conferir logs, latência, reinícios e fila após a ativação.
-- Para rollback, reverter o commit GitOps para a imagem e configuração anteriores. Em incidentes na primeira implantação, retirar as rotas ou desabilitar o consumidor pelo Git antes de alterar os recursos do banco. Confirmar compatibilidade do esquema antes de voltar a imagem. Se a migração exigir restauração, usar o backup validado e considerar as gravações posteriores ao backup. Preservar o banco externo e a chave de criptografia.
+- Para rollback, reverter o commit GitOps para a imagem e configuração anteriores. Antes de voltar para uma imagem sem autenticação, retirar o Ingress do chat pelo Git e aguardar o Argo CD remover a rota. Em incidentes com o Telegram, desabilitar o consumidor pelo Git antes de alterar os recursos do banco. Confirmar compatibilidade do esquema antes de voltar a imagem. Se a migração exigir restauração, usar o backup validado e considerar as gravações posteriores ao backup. Preservar o banco externo e a chave de criptografia.
 
-A presença da imagem no GHCR, o DNS, a validade do certificado em execução, o armazenamento e a conectividade dos pods com as demais dependências ainda precisam ser confirmados durante a execução deste plano.
+## Execução
+
+- Argo CD sincronizou o AI em `default`, com uma réplica e imagem do GHCR fixada por digest. A aplicação aplicou as migrações Liquibase, inicializou `vector_store` e respondeu às probes. O banco aceita TLS a partir do cluster.
+- O Ollama do host atende na rede dos pods por um proxy restrito a `10.42.0.0/24`. O teste gravou uma memória e seu vetor e recuperou a memória depois do rollout.
+- DNS criado na Cloudflare. O DNS público e o HTTPS foram validados. `POST /api/v1/chat` respondeu 401 sem credenciais e 200 com a conta de teste. Cadastro público e Actuator responderam 404. O limite do chat é compartilhado por domínio, com média de dez requisições por minuto e rajada de cinco. O teste atingiu HTTP 429.
+- O cliente Keycloak `ai-finance` tem o callback HTTPS configurado. O início e o callback responderam 400 sem ticket ou estado, como esperado. O vínculo e uma consulta real ao Finance ainda precisam de um teste de ponta a ponta com uma conta autorizada.
+- O RabbitMQ tem a fila `telegram_updates`. Na verificação, havia zero consumidores, zero mensagens pendentes e nenhuma política de dead-letter. A ativação do Telegram aguarda as credenciais do bot e do SMTP. A busca Brave segue opcional.
+- `pg_dump` e `pg_restore` foram validados em um PostgreSQL temporário. A restauração recuperou as três extensões e os registros de memória e vetor. A rotina periódica de backup do banco externo ainda precisa de um destino persistente.
