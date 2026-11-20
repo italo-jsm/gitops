@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-ollama-proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ai-ollama-proxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ai-ollama-proxy
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: italo-ubuntu
+      hostNetwork: true
+      automountServiceAccountToken: false
+      containers:
+        - name: proxy
+          image: docker.io/alpine/socat@sha256:beb4a68d9e4fe6b0f21ea774a0fde6c31f580dde6368939ed70100c5385b015e
+          command: ["socat"]
+          args:
+            - TCP4-LISTEN:11434,bind=10.42.0.1,range=10.42.0.0/24,reuseaddr,fork,max-children=16
+            - TCP4:127.0.0.1:11434
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              host: 10.42.0.1
+              port: 11434
+              path: /api/tags
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
