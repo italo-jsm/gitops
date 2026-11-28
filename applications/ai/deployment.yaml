@@ -27,6 +27,9 @@ spec:
             - secretRef:
                 name: ai-finance-oauth
             - secretRef:
+                name: ai-flagsmith
+                optional: true
+            - secretRef:
                 name: ai-smtp
                 optional: true
           env:
