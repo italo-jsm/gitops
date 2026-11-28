@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logs-grafana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://grafana-community.github.io/helm-charts
+    chart: grafana
+    targetRevision: 14.6.1
+    helm:
+      valuesObject:
+        rbac:
+          create: false
+        testFramework:
+          enabled: false
+        automountServiceAccountToken: false
+        admin:
+          existingSecret: logs-grafana-admin
+        persistence:
+          enabled: true
+          storageClassName: local-path
+          size: 1Gi
+        deploymentStrategy:
+          type: Recreate
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          hosts:
+            - grafana.italomariano.dev.br
+          tls:
+            - secretName: logs-grafana-tls
+              hosts:
+                - grafana.italomariano.dev.br
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Loki
+                uid: loki
+                type: loki
+                access: proxy
+                url: http://logs-loki.observability.svc:3100
+                isDefault: true
+                editable: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

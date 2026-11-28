@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logs-alloy
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: alloy
+    targetRevision: 1.16.0
+    helm:
+      valuesObject:
+        controller:
+          type: deployment
+          replicas: 1
+        rbac:
+          namespaces: [default]
+          rules:
+            - apiGroups: [""]
+              resources: [pods]
+              verbs: [get, list, watch]
+            - apiGroups: [""]
+              resources: [pods/log]
+              verbs: [get]
+        alloy:
+          configMap:
+            content: |
+              discovery.kubernetes "applications" {
+                role = "pod"
+
+                namespaces {
+                  names = ["default"]
+                }
+
+                selectors {
+                  role  = "pod"
+                  label = "app.kubernetes.io/name in (ai,finance,auth)"
+                }
+              }
+
+              discovery.relabel "applications" {
+                targets = discovery.kubernetes.applications.targets
+
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace"]
+                  target_label  = "namespace"
+                }
+
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+                  target_label  = "app"
+                }
+
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_name"]
+                  target_label  = "pod"
+                }
+
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_container_name"]
+                  target_label  = "container"
+                }
+              }
+
+              loki.source.kubernetes "applications" {
+                targets    = discovery.relabel.applications.output
+                forward_to = [loki.write.local.receiver]
+              }
+
+              loki.write "local" {
+                endpoint {
+                  url = "http://logs-loki.observability.svc:3100/loki/api/v1/push"
+                }
+              }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
