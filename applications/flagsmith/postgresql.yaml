@@ -26,9 +26,17 @@ spec:
         app.kubernetes.io/name: flagsmith-db
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
         - name: postgres
-          image: postgres:17-alpine
+          image: docker.io/library/postgres:18.3-trixie
+          securityContext:
+            # Match the auth database workaround for this node runtime.
+            appArmorProfile:
+              type: Unconfined
           env:
             - name: POSTGRES_USER
               value: flagsmith
@@ -39,12 +47,15 @@ spec:
                 secretKeyRef:
                   name: flagsmith-runtime
                   key: postgres-password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - name: postgres
               containerPort: 5432
           readinessProbe:
             exec:
-              command: ["pg_isready", "-U", "flagsmith", "-d", "flagsmith"]
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "flagsmith", "-d", "flagsmith"]
+            timeoutSeconds: 5
           resources:
             requests:
               cpu: 100m
