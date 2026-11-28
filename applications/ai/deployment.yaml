@@ -17,7 +17,7 @@ spec:
         - name: ghcr-credentials
       containers:
         - name: ai
-          image: ghcr.io/italo-jsm/ai@sha256:40efcedebde10bbee0be1b59b637fc9f2c2a93264c53cfa9859a6bef0340c623
+          image: ghcr.io/italo-jsm/ai@sha256:6a0142dd184a26b1eb45055f6e7ab81110f1d132acadcdf336e2180e56e76a14
           ports:
             - name: http
               containerPort: 8080
